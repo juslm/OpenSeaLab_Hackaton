@@ -37,8 +37,6 @@ world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
 
 fig, ax = plt.subplots(figsize=(10, 10))
 
-#world.plot(ax=ax)
-
 colors = ['r', 'g', 'b', 'k', 'y']
 
 coordinates = world["geometry"]
@@ -48,16 +46,18 @@ xmax = 55
 ymin = 28
 ymax = 73
 
-map_poly = gpd.GeoSeries(Polygon([[xmin, ymin], [xmin, ymax], [xmax, ymax], [xmax, ymin]]), crs = 4326).difference(world["geometry"].unary_union)
+safe = gpd.GeoSeries(Polygon([[xmin, ymin], [xmin, ymax], [xmax, ymax], [xmax, ymin]]), crs = 4326).difference(world["geometry"].unary_union)
+
+data_dict = {}
 
 for i, layer in enumerate(layers):
     ha = get_humanact(layer)
-    #ha.plot(ax=ax, color = colors[i], markersize = 0.1)
+    data_dict[layer] = ha
     circles = ha["geometry"].buffer(0.1)
     mp = circles.unary_union
-    map_poly = map_poly.difference(mp)
+    safe = safe.difference(mp)
 
-map_poly.plot(ax=ax, color = "green")
+safe.plot(ax=ax, color = "green")
 ax.set_facecolor('xkcd:salmon')
 ax.set_facecolor((1.0, 0.47, 0.42))
 ax.set_xlim(xmin, xmax)
