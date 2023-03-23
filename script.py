@@ -30,7 +30,7 @@ def get_humanact(name):
 
     return gdf
 
-layers = ["munitions"]
+layers = ["munitions", "platforms", "heritageshipwrecks", "windfarmspoly"]
 
 world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
 
@@ -38,9 +38,11 @@ fig, ax = plt.subplots(figsize=(10, 10))
 
 world.plot(ax=ax)
 
-for layer in layers:
+colors = ['r', 'g', 'b', 'k', 'y']
+
+for i, layer in enumerate(layers):
     ha = get_humanact(layer)
-    ha.plot(ax=ax)
+    ha.plot(ax=ax, color = colors[i], markersize = 0.1)
 
 ax.set_xlim(-30, 55)
 ax.set_ylim(28, 73)
