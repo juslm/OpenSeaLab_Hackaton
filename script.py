@@ -1,7 +1,8 @@
 import pandas as pd
 import geopandas as gpd
 import matplotlib.pyplot as plt
-from shapely import wkt
+from shapely.geometry import Point
+from shapely.geometry import Polygon
 
 from requests import Request
 from owslib.wfs import WebFeatureService
@@ -36,15 +37,30 @@ world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
 
 fig, ax = plt.subplots(figsize=(10, 10))
 
-world.plot(ax=ax)
+#world.plot(ax=ax)
 
 colors = ['r', 'g', 'b', 'k', 'y']
 
+coordinates = world["geometry"]
+
+xmin = -30
+xmax = 55
+ymin = 28
+ymax = 73
+
+map_poly = gpd.GeoSeries(Polygon([[xmin, ymin], [xmin, ymax], [xmax, ymax], [xmax, ymin]]), crs = 4326).difference(world["geometry"].unary_union)
+
 for i, layer in enumerate(layers):
     ha = get_humanact(layer)
-    ha.plot(ax=ax, color = colors[i], markersize = 0.1)
+    #ha.plot(ax=ax, color = colors[i], markersize = 0.1)
+    circles = ha["geometry"].buffer(0.1)
+    mp = circles.unary_union
+    map_poly = map_poly.difference(mp)
 
-ax.set_xlim(-30, 55)
-ax.set_ylim(28, 73)
+map_poly.plot(ax=ax, color = "green")
+ax.set_facecolor('xkcd:salmon')
+ax.set_facecolor((1.0, 0.47, 0.42))
+ax.set_xlim(xmin, xmax)
+ax.set_ylim(ymin, ymax)
 
 plt.show()
