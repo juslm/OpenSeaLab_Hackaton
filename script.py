@@ -6,6 +6,7 @@ from shapely.geometry import Polygon
 
 from requests import Request
 from owslib.wfs import WebFeatureService
+import urllib.parse
 
 def get_humanact(name):
     # URL for WFS backend
@@ -31,7 +32,35 @@ def get_humanact(name):
 
     return gdf
 
-layers = ["munitions", "platforms", "heritageshipwrecks", "windfarmspoly"]
+def get_physics(name):
+    # URL for WFS backend
+    url = "https://prod-geoserver.emodnet-physics.eu/geoserver/EMODnet/ows"
+
+    # Initialize
+    wfs = WebFeatureService(url=url)
+
+    # Fetch the last available layer (as an example) --> 'vaestoruutu:vaki2021_5km'
+    layer_name = name
+
+    # Specify the parameters for fetching the data
+    # Count: specificies amount of rows to return (e.g. 10000 or 100)
+    # startIndex: specifies at which offset to start returning rows
+    params = dict(service='WFS', version="1.0.0", request='GetFeature',
+        typeName=layer_name, outputFormat='json')
+
+    # Parse the URL with parameters
+    wfs_request_url = urllib.parse.unquote(Request('GET', url, params=params).prepare().url)
+
+    # Read data from URL
+    gdf = gpd.read_file(wfs_request_url)
+
+    return gdf
+
+#wind = get_physics("EMODnet%3ADAT_LatestDataParametersProduct")
+
+input = Point(3, 54)
+
+layers = ["munitions", "platforms", "heritageshipwrecks", "windfarmspoly", ]
 
 world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
 
@@ -58,6 +87,7 @@ for i, layer in enumerate(layers):
     safe = safe.difference(mp)
 
 safe.plot(ax=ax, color = "green")
+# data_dict["wdpaareas"].plot(ax=ax, color = "blue")
 ax.set_facecolor('xkcd:salmon')
 ax.set_facecolor((1.0, 0.47, 0.42))
 ax.set_xlim(xmin, xmax)
