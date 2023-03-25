@@ -9,6 +9,7 @@ import requests
 from owslib.wfs import WebFeatureService
 import os
 import webbrowser
+import psycopg2
 
 def get_humanact(name):
     # URL for WFS backend
@@ -45,10 +46,15 @@ m = folium.Map(zoom_start = 5, location = [51.505, -0.09])
 for i, layer in enumerate(points_data):
     ha = get_humanact(layer).to_crs("EPSG:4326")
     ha["layer"] = pd.Series([layer for x in range(len(ha.index))])
-    heat_data = [[point.xy[1][0], point.xy[0][0]] for point in ha.geometry]
-    heatmap = HeatMap(heat_data, name = layer, gradient={0:"white", 1:colors[i]}, radius = 10, max_zoom = 1, blur = 5)
+    #heat_data = [[point.xy[1][0], point.xy[0][0]] for point in ha.geometry]
+    #heatmap = HeatMap(heat_data, name = layer, gradient={0:"white", 1:colors[i]}, radius = 10, max_zoom = 1, blur = 5)
     # Add the density map to the map
-    heatmap.add_to(m)
+    #heatmap.add_to(m)
+    ha.explore(
+     m=m,
+     color=colors[i],
+     name=layer
+    )
 
 for j, layer in enumerate(poly_data):
     ha = get_humanact(layer).to_crs("EPSG:4326")
