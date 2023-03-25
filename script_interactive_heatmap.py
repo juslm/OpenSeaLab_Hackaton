@@ -5,8 +5,6 @@ from shapely.geometry import Point
 from shapely.geometry import Polygon
 import folium
 from folium.plugins import HeatMap
-import seaborn
-import geoplot
 
 from requests import Request
 from owslib.wfs import WebFeatureService
@@ -38,38 +36,14 @@ def get_humanact(name):
 
     return gdf
 
-def get_physics(name):
-    # URL for WFS backend
-    url = "https://prod-geoserver.emodnet-physics.eu/geoserver/EMODnet/ows"
-
-    # Initialize
-    wfs = WebFeatureService(url=url)
-
-    # Fetch the last available layer (as an example) --> 'vaestoruutu:vaki2021_5km'
-    layer_name = name
-
-    # Specify the parameters for fetching the data
-    # Count: specificies amount of rows to return (e.g. 10000 or 100)
-    # startIndex: specifies at which offset to start returning rows
-    params = dict(service='WFS', version="1.0.0", request='GetFeature',
-        typeName=layer_name, outputFormat='json')
-
-    # Parse the URL with parameters
-    wfs_request_url = urllib.parse.unquote(Request('GET', url, params=params).prepare().url)
-
-    # Read data from URL
-    gdf = gpd.read_file(wfs_request_url)
-
-    return gdf
-
-#wind = get_physics("EMODnet%3ADAT_LatestDataParametersProduct")
-
 points_data = ["munitions", "platforms"]
 polygons_data = ["platforms", "windfarmspoly"]
 
 world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
+coord = [50, 0]
 
-m = folium.Map()
+m = folium.Map(zoom_start = 5, location = coord)
+color = []
 
 for i, layer in enumerate(points_data):
     ha = get_humanact(layer)
