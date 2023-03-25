@@ -3,10 +3,13 @@ import geopandas as gpd
 import matplotlib.pyplot as plt
 from shapely.geometry import Point
 from shapely.geometry import Polygon
+import folium
 
 from requests import Request
 from owslib.wfs import WebFeatureService
 import urllib.parse
+import os
+import webbrowser
 
 def get_humanact(name):
     # URL for WFS backend
@@ -58,8 +61,6 @@ def get_physics(name):
 
 #wind = get_physics("EMODnet%3ADAT_LatestDataParametersProduct")
 
-input = Point(3, 54)
-
 layers = ["munitions", "platforms", "heritageshipwrecks", "windfarmspoly", ]
 
 world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
@@ -78,13 +79,30 @@ ymax = 73
 safe = gpd.GeoSeries(Polygon([[xmin, ymin], [xmin, ymax], [xmax, ymax], [xmax, ymin]]), crs = 4326).difference(world["geometry"].unary_union)
 
 data_dict = {}
+all_layers = pd.DataFrame()
 
 for i, layer in enumerate(layers):
-    ha = get_humanact(layer)
+    ha = get_humanact(layer).set_crs(4326, allow_override=True)
+    ha["layer"] = pd.Series([layer for x in range(len(ha.index))])
     data_dict[layer] = ha
     circles = ha["geometry"].buffer(0.1)
     mp = circles.unary_union
     safe = safe.difference(mp)
+    all_layers = all_layers.append(ha[["layer", "geometry"]], ignore_index=True)
+
+all_layers.set_crs(4326, allow_override=True)
+
+m = all_layers.explore(
+     column="layer",
+     tooltip="layer",
+     popup=True,
+     tiles="CartoDB positron",
+     cmap="Set1",
+     style_kwds=dict(color="black")
+    )
+
+m.save('my_map.html')
+webbrowser.open('file://' + os.path.realpath('my_map.html'))
 
 safe.plot(ax=ax, color = "green")
 # data_dict["wdpaareas"].plot(ax=ax, color = "blue")
