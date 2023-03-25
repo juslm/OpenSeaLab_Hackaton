@@ -82,7 +82,7 @@ data_dict = {}
 all_layers = pd.DataFrame()
 
 for i, layer in enumerate(layers):
-    ha = get_humanact(layer).set_crs(4326, allow_override=True)
+    ha = get_humanact(layer)
     ha["layer"] = pd.Series([layer for x in range(len(ha.index))])
     data_dict[layer] = ha
     circles = ha["geometry"].buffer(0.1)
