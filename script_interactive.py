@@ -3,6 +3,7 @@ import pandas as pd
 import geopandas as gpd
 import folium
 from folium.plugins import HeatMap
+from shapely.geometry import Polygon
 
 from requests import Request
 import requests
@@ -32,23 +33,36 @@ def get_humanact(name):
 
     return gdf
 
-points_data = ["munitions", "platforms", "heritageshipwrecks"]
+points_data = ["munitions", "platforms"]
 poly_data = ["windfarmspoly"]
 
 world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
-world_poly = world.geometry.unary_union
 
-colors = ['red', 'green', 'blue', 'yellow']
+coordinates = world["geometry"]
+
+xmin = -30
+xmax = 55
+ymin = 28
+ymax = 73
+
+safe = gpd.GeoSeries(Polygon([[xmin, ymin], [xmin, ymax], [xmax, ymax], [xmax, ymin]]), crs = 4326).difference(world.geometry.unary_union)
+safe = safe.to_crs("EPSG:32634")
+
+colors = ['red', 'purple', 'blue', 'yellow']
 
 m = folium.Map(zoom_start = 5, location = [51.505, -0.09])
 
 for i, layer in enumerate(points_data):
     ha = get_humanact(layer).to_crs("EPSG:4326")
     ha["layer"] = pd.Series([layer for x in range(len(ha.index))])
-    heat_data = [[point.xy[1][0], point.xy[0][0]] for point in ha.geometry]
-    heatmap = HeatMap(heat_data, name = layer, gradient={0:"white", 1:colors[i]}, radius = 10, max_zoom = 1, blur = 5)
-    # Add the density map to the map
-    heatmap.add_to(m)
+    ha.explore(
+     m=m,
+     color=colors[i],
+     name=layer
+    )
+    circles = ha.to_crs("EPSG:32634").geometry.buffer(1000)
+    mp = circles.unary_union
+    safe = safe.difference(mp)
 
 for j, layer in enumerate(poly_data):
     ha = get_humanact(layer).to_crs("EPSG:4326")
@@ -58,8 +72,16 @@ for j, layer in enumerate(poly_data):
      color=colors[i+1+j],
      name=layer
     )
+    circles = ha.to_crs("EPSG:32634").geometry
+    mp = circles.unary_union
+    safe = safe.difference(mp)
 
 folium.LayerControl().add_to(m)
+
+safe = gpd.GeoDataFrame(geometry = safe)
+safe.explode()
+
+folium.GeoJson(data=safe.geometry).add_to(m)
 
 m.save('my_map.html')
 webbrowser.open('file://' + os.path.realpath('my_map.html'))
