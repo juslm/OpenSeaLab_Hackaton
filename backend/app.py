@@ -6,54 +6,40 @@ from flask_cors import CORS, cross_origin
 app = Flask(__name__)
 CORS(app, support_credentials=True)
 
-persons = [
-  {
-    "id": '1',
-    "name": 'Luke Skywalker',
-    "height": '172',
-    "mass": '77',
-    "hair_color": 'blond',
-    "skin_color": 'fair',
-    "eye_color": 'blue',
-    "gender": 'male',
-  },
-  {
-    "id": '2',
-    "name": 'C-3PO',
-    "height": '167',
-    "mass": '75',
-    "hair_color": 'n/a',
-    "skin_color": 'gold',
-    "eye_color": 'yellow',
-    "gender": 'n/a',
-  },
-  {
-    "id": '3',
-    "name": 'R2-D2',
-    "height": '96',
-    "mass": '32',
-    "hair_color": 'n/a',
-    "skin_color": 'white, blue',
-    "eye_color": 'red',
-    "gender": 'n/a',
-  },
-  {
-    "id": '4',
-    "name": 'Darth Vader',
-    "height": '202',
-    "mass": '136',
-    "hair_color": 'none',
-    "skin_color": 'white',
-    "eye_color": 'yellow',
-    "gender": 'male',
-  },
+zones = [
+    {
+        "id": '1',
+        "name": 'Zone 1 name',
+        "area": '12345',
+        "polygon": [[51.604185, 2.674773],
+                    [51.241534, 2.652383],
+                    [51.080872, 1.566426],
+                    [51.306570, 1.570184],
+                    [51.554536, 2.160120]]
+    },
+    {
+        "id": '2',
+        "name": 'Zone 2 name',
+        "area": '12345',
+        "polygon": [[52.923565, 4.237541],
+                    [53.695897, 2.914547],
+                    [53.731058, 4.764185]],
+    },
+    {
+        "id": '3',
+        "name": 'Zone 3 name',
+        "area": '12345',
+        "polygon": [[52.931184, 2.013089],
+                    [52.891607, 2.686011],
+                    [53.455049, 1.610033]]
+    },
 ]
 
 
-@app.route('/hello')
+@app.route('/zones')
 @cross_origin(supports_credentials=True)
-def get_songs() -> Response:
-    return jsonify(persons)
+def get_zones() -> Response:
+    return jsonify(zones)
 
 
 if __name__ == "__main__":
