@@ -1,0 +1,35 @@
+.example-form {
+  margin: 10px auto auto 10px;
+}
+
+.example-full-width {
+  width: 80%;
+  height: 70px;
+}
+
+.submit-button{
+  margin: auto auto auto 10px;
+}
+
+.line{
+  width: 80%;
+  border-bottom: 5px solid #0066CC;
+  margin: 20px;
+}
+.map-container {
+  width: 70%;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  position: absolute;
+  margin: 20px;
+}
+
+.map-frame {
+  border: 2px solid black;
+  height: 100%;
+}
+
+#map {
+  height: 100%;
+}

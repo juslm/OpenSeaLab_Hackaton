@@ -1,0 +1,31 @@
+<div style="display: flex">
+  <div style="height: 100%; width: 30%; align-content: center">
+    <form class="example-form">
+      <mat-form-field class="example-full-width">
+        <mat-label>Longitude</mat-label>
+        <input [(ngModel)]="longitudeValue" name="something2" matInput>
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Latitude</mat-label>
+        <input [(ngModel)]="latitudeValue" name="something" matInput>
+      </mat-form-field>
+    </form>
+    <button class="submit-button" (click)="submitForm($event)" clickable mat-raised-button>Submit</button>
+
+    <mat-list *ngFor="let zone of zones" role="list">
+      <mat-list-item role="listitem">
+        <div>{{zone.name}} - {{zone.area}} km² </div>
+      </mat-list-item>
+    </mat-list>
+
+  </div>
+  <div class="map-container">
+    <div class="map-frame">
+      <div id="map"></div>
+    </div>
+  </div>
+</div>
+
+
+
