@@ -91,14 +91,12 @@ export class AppComponent {
                     };
 
                     const polywind = []
-                    console.log(windfarm['geometry']['coordinates'])
                     for (const coord1 of windfarm['geometry']['coordinates'] ) {
                       for (const coord2 of coord1) {
                         for (const points of coord1) {
                           for (const point of points) {
                             polywind.push([point[1], point[0]])
                           }
-
                         }
                       }
                     }

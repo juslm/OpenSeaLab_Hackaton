@@ -4,7 +4,7 @@ from flask import Flask, jsonify, Response
 from flask_cors import CORS, cross_origin
 
 from .get_humanact import get_humanact
-from .data_collect import get_munitions
+from .data_collect import get_windspeedgrid
 
 app = Flask(__name__)
 CORS(app, support_credentials=True)
@@ -54,6 +54,12 @@ def get_munitions() -> Response:
 def get_platforms() -> Response:
     res = data_platforms
     return res.to_json()
+
+@app.route('/windspeed')
+@cross_origin(supports_credentials=True)
+def get_windspeed() -> Response:
+    windspeed = get_windspeedgrid()[0]
+    return windspeed
 
 @app.route('/windfarms')
 @cross_origin(supports_credentials=True)
