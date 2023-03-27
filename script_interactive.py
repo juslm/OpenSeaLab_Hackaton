@@ -65,6 +65,9 @@ for i, point in enumerate(windspeeds.geometry):
 
 windspeeds["tiles"] = gpd.GeoSeries(tiles, crs = "EPSG:4326")
 
+rest_wind = windspeeds[(min_speed >= windspeeds["speed(m/s)"]) | (max_speed >= windspeeds["speed(m/s)"])].reset_index()
+windspeeds = windspeeds[(min_speed <= windspeeds["speed(m/s)"]) | (max_speed <= windspeeds["speed(m/s)"])].reset_index()
+
 data = ["munitions", "platforms", "windfarmspoly"]
 buffers = {}
 
@@ -83,8 +86,6 @@ colors = ['red', 'purple', 'blue', 'yellow']
 
 m = folium.Map(zoom_start = 5, location = [51.505, -0.09], control_scale = True)
 
-jsons = {}
-
 for i, layer in enumerate(data):
     ha = get_humanact(layer).to_crs("EPSG:4326")
     ha["layer"] = pd.Series([layer for x in range(len(ha.index))])
@@ -93,6 +94,7 @@ for i, layer in enumerate(data):
     mp = circles.unary_union
     safe = safe.difference(mp)
 
+safe = safe.difference(gpd.GeoSeries(rest_wind["tiles"].to_crs("EPSG:32634").unary_union, crs = "EPSG:32634"))
 safe = gpd.GeoDataFrame(geometry = safe)
 safe.explode()
 
@@ -100,7 +102,7 @@ folium.GeoJson(data=safe.geometry, style_function=lambda x:{"fillColor":"green",
 
 w = folium.FeatureGroup(name='wind speed').add_to(m)
 for i, row in windspeeds.iterrows():
-    if min_speed < row["speed(m/s)"] < max_speed and not any(row["tiles"].intersects(world.geometry)):
+    if not any(row["tiles"].intersects(world.geometry)):
         b = folium.GeoJson(data=row["tiles"], style_function=lambda x:{"fillColor":"white", "color":"black"})
         b.add_child(folium.Popup(str(row["speed(m/s)"])))
         w.add_child(b)
