@@ -109,5 +109,7 @@ for i, row in windspeeds.iterrows():
 folium.LayerControl().add_to(m)
 MousePosition().add_to(m)
 
+jsons["safe"] = safe.to_json()
+
 m.save('my_map.html')
 webbrowser.open('file://' + os.path.realpath('my_map.html'))
