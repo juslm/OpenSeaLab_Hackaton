@@ -39,11 +39,7 @@ def get_windspeedgrid(min_speed = 4, max_speed = 15):
 
     return [windspeeds.to_json(), windspeeds]
 
-def get_safe(xmin=-30,
-             xmax=40,
-             ymin=28,
-             ymax=73,
-             munitions_buffer=5000,
+def get_safe(munitions_buffer=5000,
              platforms_buffer=5000,
              windfarmspoly_buffer=0,
              data=None):
