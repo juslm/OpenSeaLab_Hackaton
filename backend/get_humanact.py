@@ -1,3 +1,7 @@
+import geopandas as gpd
+from requests import Request
+from owslib.wfs import WebFeatureService
+
 def get_humanact(name):
     # URL for WFS backend
     url = "https://ows.emodnet-humanactivities.eu/wfs"

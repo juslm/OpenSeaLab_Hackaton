@@ -92,7 +92,6 @@ for i, layer in enumerate(data):
     circles = ha.to_crs("EPSG:32634").geometry.buffer(buffers[layer])
     mp = circles.unary_union
     safe = safe.difference(mp)
-    jsons[layer] = ha.to_json()
 
 safe = gpd.GeoDataFrame(geometry = safe)
 safe.explode()
@@ -108,8 +107,6 @@ for i, row in windspeeds.iterrows():
 
 folium.LayerControl().add_to(m)
 MousePosition().add_to(m)
-
-jsons["safe"] = safe.to_json()
 
 m.save('my_map.html')
 webbrowser.open('file://' + os.path.realpath('my_map.html'))
