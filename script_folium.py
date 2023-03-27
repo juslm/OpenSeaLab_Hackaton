@@ -99,7 +99,6 @@ for i, layer in enumerate(data):
 
 # safe = safe.difference(gpd.GeoSeries(windspeeds["tiles"].to_crs("EPSG:32634").unary_union, crs = "EPSG:32634"))
 safe = gpd.GeoDataFrame(geometry = gpd.GeoSeries(safe), crs = "EPSG:32634")
-safe = safe.explode()
 
 folium.GeoJson(data=safe.geometry, style_function=lambda x:{"fillColor":"green", "color":"green"}, name = "safe").add_to(m)
 
