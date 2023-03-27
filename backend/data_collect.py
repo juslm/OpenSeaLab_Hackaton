@@ -21,9 +21,10 @@ def get_windfarmspoly(name="windfarmspoly"):
 
 
 def get_windspeedgrid(min_speed=4, max_speed=15):
-    windspeeds = pd.read_csv("../data/windspeeds.csv", names=["geometry", "speed(m/s)"])
+    windspeeds = pd.read_csv("./data/windspeeds.csv", names=["geometry", "speed(m/s)"])
     windspeeds["geometry"] = [Point(eval(s)) for s in windspeeds["geometry"]]
-    windspeeds["weight"] = [n / max(windspeeds["speed(m/s)"]) for n in windspeeds["speed(m/s)"]]
+    windspeeds["speed"] = windspeeds["speed(m/s)"]
+    windspeeds["weight"] = [n / max(windspeeds["speed"]) for n in windspeeds["speed"]]
     windspeeds = gpd.GeoDataFrame(windspeeds)
 
     tiles = []
@@ -37,9 +38,9 @@ def get_windspeedgrid(min_speed=4, max_speed=15):
                               [x - dist / 2, y - dist / 2]]))
 
     windspeeds["geometry"] = gpd.GeoSeries(tiles, crs = "EPSG:4326")
-    windspeeds = windspeeds[(min_speed <= windspeeds["speed(m/s)"]) & (max_speed >= windspeeds["speed(m/s)"])].reset_index()
+    windspeeds = windspeeds[(min_speed <= windspeeds["speed"]) & (max_speed >= windspeeds["speed"])]\
+        .reset_index()
 
-    print(windspeeds)
     return [windspeeds.to_json(), windspeeds]
 
 
