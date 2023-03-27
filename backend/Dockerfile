@@ -1,4 +1,4 @@
-FROM python:3.9-alpine as buil-step
+FROM python:3.9-slim as buil-step
 
 RUN mkdir -p /app
 
@@ -8,8 +8,8 @@ RUN pip install --upgrade pip
 
 COPY requirements.txt /app
 
-RUN apk add --update alpine-sdk
-RUN apk add --update-cache gdal 
+RUN apt-get update
+RUN apt-get install -y gdal-bin libgdal-dev g++
 RUN pip install -r requirements.txt --no-cache-dir
 
 COPY . .

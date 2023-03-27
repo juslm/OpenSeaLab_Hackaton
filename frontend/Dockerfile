@@ -1,4 +1,4 @@
-FROM node:14.17
+FROM node:18.10
 
 # Create a directory where our app will be placed
 RUN mkdir -p /app
