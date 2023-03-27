@@ -63,10 +63,12 @@ for i, point in enumerate(windspeeds.geometry):
     y = point.xy[1][0]
     tiles.append(Polygon([[x-dist/2, y+dist/2], [x+dist/2, y+dist/2], [x+dist/2, y-dist/2], [x-dist/2, y-dist/2]]))
 
-windspeeds["tiles"] = gpd.GeoSeries(tiles, crs = "EPSG:4326")
+windspeeds["geometry"] = gpd.GeoSeries(tiles, crs = "EPSG:4326")
 
 rest_wind = windspeeds[(min_speed >= windspeeds["speed(m/s)"]) | (max_speed <= windspeeds["speed(m/s)"])].reset_index()
 windspeeds = windspeeds[(min_speed <= windspeeds["speed(m/s)"]) & (max_speed >= windspeeds["speed(m/s)"])].reset_index()
+
+
 
 data = ["munitions", "platforms", "windfarmspoly"]
 buffers = {}

@@ -34,7 +34,7 @@ def get_windspeedgrid(min_speed = 4, max_speed = 15):
         y = point.xy[1][0]
         tiles.append(Polygon([[x-dist/2, y+dist/2], [x+dist/2, y+dist/2], [x+dist/2, y-dist/2], [x-dist/2, y-dist/2]]))
     
-    windspeeds["tiles"] = gpd.GeoSeries(tiles, crs = "EPSG:4326")
+    windspeeds["geometry"] = gpd.GeoSeries(tiles, crs = "EPSG:4326")
     windspeeds = windspeeds[(min_speed <= windspeeds["speed(m/s)"]) & (max_speed >= windspeeds["speed(m/s)"])].reset_index()
 
     return [windspeeds.to_json(), windspeeds]
