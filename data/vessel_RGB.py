@@ -1,9 +1,10 @@
 from skimage import io
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
  
-m =io.imread(r"C:\Users\Diego\Desktop\Gante\hackathon\map_png.png")
+m =io.imread(r"data/map_png.png")
 print("Dimensiones de la imagen:")
 print(m.shape)
 plt.imshow(m,vmin=0,vmax=1)
@@ -15,8 +16,8 @@ west = -87.706484
 
 np_image = np.array(m)
 # Set the size of the image
-width = 962
-heigth = 867
+width = 867
+heigth = 962
 
 relation_ew=(east-west)/width
 relation_ns=(north-south)/heigth
@@ -38,6 +39,16 @@ print(m)
 #         else:
 #             coordenates[tuple([(north-y*relation_ns),(east-x*relation_ew)])]=m[x][y]
 
+list = []
+
+for j, column in enumerate(m):
+    for i, rgb in enumerate(column):
+        point = "POINT("+str(east-relation_ew*(j+1))+","+str(north-relation_ns*(i+1))+")"
+        list.append([point, rgb])
+
+df = pd.DataFrame(list, columns = ["geometry", "rgb"])
+
+print(df)
 print(962*867-len(coordenates.keys()))
 
 
