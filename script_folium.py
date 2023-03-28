@@ -97,7 +97,7 @@ m = folium.Map(tiles=None, zoom_start = 5, location = [51.505, -0.09], control_s
 folium.TileLayer(tiles = "https://api.mapbox.com/styles/v1/lucmeister5/clfsc5sqd004h01o5j4l45awp/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibHVjbWVpc3RlcjUiLCJhIjoiY2xmczkzY2Q1MDN4NzNqcGo2eXR0ZjlxMiJ9.FE0wwumsjqqLfarllMWcKA",
                  attr='XXX Mapbox Attribution', name = "coastlines").add_to(m)
 
-#folium.TileLayer('openstreetmap').add_to(m)
+folium.TileLayer('openstreetmap').add_to(m)
 
 safe = windspeeds["geometry"].to_crs("EPSG:32634")
 safe = safe.unary_union
