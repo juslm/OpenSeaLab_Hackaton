@@ -50,6 +50,7 @@ ymax = 73
 
 munitions_buffer = 5000
 platforms_buffer = 5000
+shipwrecks_buffer = 5000
 windfarmspoly_buffer = 0
 
 min_speed = 4
@@ -74,12 +75,13 @@ windspeeds["geometry"] = gpd.GeoSeries(tiles, crs = "EPSG:4326")
 rest_wind = windspeeds[(min_speed >= windspeeds["speed(m/s)"]) | (max_speed <= windspeeds["speed(m/s)"])].reset_index()
 windspeeds = windspeeds[(min_speed <= windspeeds["speed(m/s)"]) & (max_speed >= windspeeds["speed(m/s)"])].reset_index()
 
-data = ["munitions", "platforms", "windfarmspoly"]
+data = ["munitions", "platforms", "windfarmspoly", "heritageshipwrecks"]
 buffers = {}
 
 buffers["munitions"] = munitions_buffer
 buffers["platforms"] = platforms_buffer
 buffers["windfarmspoly"] = windfarmspoly_buffer
+buffers["heritageshipwrecks"] = shipwrecks_buffer
 
 world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
 
