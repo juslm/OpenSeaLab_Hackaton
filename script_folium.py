@@ -92,8 +92,12 @@ colors = ['red', 'purple', 'blue', 'yellow']
 
 # MAP
 
-m = folium.Map(zoom_start = 5, location = [51.505, -0.09], control_scale = True, max_bounds = True)
-#m.fit_bounds((ymax, xmax), (ymin, xmin))
+m = folium.Map(tiles=None, zoom_start = 5, location = [51.505, -0.09], control_scale = True, max_bounds = True)
+
+folium.TileLayer(tiles = "https://api.mapbox.com/styles/v1/lucmeister5/clfsc5sqd004h01o5j4l45awp/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibHVjbWVpc3RlcjUiLCJhIjoiY2xmczkzY2Q1MDN4NzNqcGo2eXR0ZjlxMiJ9.FE0wwumsjqqLfarllMWcKA",
+                 attr='XXX Mapbox Attribution', name = "coastlines").add_to(m)
+
+#folium.TileLayer('openstreetmap').add_to(m)
 
 safe = windspeeds["geometry"].to_crs("EPSG:32634")
 safe = safe.unary_union
@@ -113,7 +117,7 @@ folium.GeoJson(data=safe.geometry, style_function=lambda x:{"fillColor":"green",
 
 w = folium.FeatureGroup(name='wind speed').add_to(m)
 for i, row in windspeeds.iterrows():
-    b = folium.GeoJson(data=row["geometry"], style_function=lambda x:{"fillColor":"white", "color":"white", "opacity":"0"})
+    b = folium.GeoJson(data=row["geometry"], style_function=lambda x:{"fillColor":"white", "color":"white", "opacity":0})
     b.add_child(folium.Popup(str(row["speed(m/s)"])))
     w.add_child(b)
 
