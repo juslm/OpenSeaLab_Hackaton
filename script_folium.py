@@ -46,6 +46,12 @@ munitions_buffer = 5000
 platforms_buffer = 5000
 windfarmspoly_buffer = 0
 
+#VESSEL
+
+#vessel_density = gpd.read_file("data/vessel_rgb.csv")
+
+# WIND
+
 min_speed = 4
 max_speed = 15
 
@@ -84,7 +90,10 @@ coordinates = world["geometry"]
 
 colors = ['red', 'purple', 'blue', 'yellow']
 
-m = folium.Map(zoom_start = 5, location = [51.505, -0.09], control_scale = True)
+# MAP
+
+m = folium.Map(zoom_start = 5, location = [51.505, -0.09], control_scale = True, max_bounds = True)
+#m.fit_bounds((ymax, xmax), (ymin, xmin))
 
 safe = windspeeds["geometry"].to_crs("EPSG:32634")
 safe = safe.unary_union
@@ -104,7 +113,7 @@ folium.GeoJson(data=safe.geometry, style_function=lambda x:{"fillColor":"green",
 
 w = folium.FeatureGroup(name='wind speed').add_to(m)
 for i, row in windspeeds.iterrows():
-    b = folium.GeoJson(data=row["geometry"], style_function=lambda x:{"fillColor":"white", "color":"black"})
+    b = folium.GeoJson(data=row["geometry"], style_function=lambda x:{"fillColor":"white", "color":"white", "opacity":"0"})
     b.add_child(folium.Popup(str(row["speed(m/s)"])))
     w.add_child(b)
 
